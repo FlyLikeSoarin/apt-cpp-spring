@@ -1,0 +1,40 @@
+name: validate-assignment
+on:
+  pull_request:
+    paths:
+      - '**.cpp'
+jobs:
+  check-codestyle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Check branch name
+        run: ./check-branch.sh ${{ github.head_ref }}
+        id: extract-hw-path
+      - uses: actions/github-script@v6
+        if: steps.extract-hw-path.outputs.hw_path == 'error'
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '${{ steps.extract-hw-path.outputs.reason }}'
+            })
+
+      - name: Install clang-tidyg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang-tidy
+      - name: Create results directory
+        run: |
+          mkdir clang-tidy-result
+      - name: Run clang-tidy
+        run: |
+          clang-tidy -export-fixes="clang-tidy-result/fixes.yml" ${{ steps.extract-hw-path.outputs.hw_path }}/*.cpp || true
+      - name: Run clang-tidy-pr-comments action
+        uses: platisd/clang-tidy-pr-comments@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          clang_tidy_fixes: clang-tidy-result/fixes.yml
