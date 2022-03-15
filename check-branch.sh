@@ -14,11 +14,4 @@ if ! grep -Fxq "${1##*-}" .tasks.txt; then
     exit
 fi
 
-# Check for code
-if ! ls "./${1%%-*}/${1##*-}/*.cpp" 1> /dev/null 2>&1; then
-    echo "::set-output name=hw_path::error"
-    echo "::set-output name=reason::No code found in task directory ./${1%%-*}/${1##*-}"
-    exit
-fi
-
 echo "::set-output name=hw_path::./${1%%-*}/${1##*-}"
