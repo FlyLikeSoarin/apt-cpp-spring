@@ -32,7 +32,7 @@ jobs:
           mkdir clang-tidy-result
       - name: Run clang-tidy
         run: |
-          clang-tidy --config-file=".clang-tidy"  --export-fixes="clang-tidy-result/fixes.yml" ${{ steps.extract-hw-path.outputs.hw_path }}/*.cpp
+          clang-tidy -export-fixes="clang-tidy-result/fixes.yml" ${{ steps.extract-hw-path.outputs.hw_path }}/*.cpp || true
       - name: Run clang-tidy-pr-comments action
         uses: platisd/clang-tidy-pr-comments@master
         with:
