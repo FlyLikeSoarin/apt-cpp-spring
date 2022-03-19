@@ -10,7 +10,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Check branch name
-        run: ./check-branch.sh ${{ github.head_ref }}
+        run: ./.check-branch.sh ${{ github.head_ref }}
         id: extract-hw-path
       - uses: actions/github-script@v6
         if: steps.extract-hw-path.outputs.hw_path == 'error'
