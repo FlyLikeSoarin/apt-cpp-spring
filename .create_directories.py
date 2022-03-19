@@ -24,7 +24,7 @@ def main():
             os.makedirs(path)
             touch(f'{path}/.placeholder')
     if reply[:1] == 'n':
-        passp
+        pass
     print('Done')
 
 
